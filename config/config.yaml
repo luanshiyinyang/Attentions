@@ -1,0 +1,27 @@
+data:
+  dataset: tiny-imagenet200  # you can choose caltech101, caltech256, tiny-imagenet200
+  split: "8:1:1"
+  caltech101:
+    root_folder: /home/zhouchen/Datasets/Caltech101/101_ObjectCategories
+    txt_path: ../dataset/caltech101/
+    classes: 101
+  caltech256:
+    root_folder: /home/zhouchen/Datasets/Caltech256/256_ObjectCategories
+    txt_path: ../dataset/caltech256/
+    classes: 257
+  tiny-imagenet200:
+    root_folder: /home/zhouchen/Datasets/TinyImagenet200/tiny-imagenet-200
+    txt_path: ../dataset/tiny-imagenet200/
+    classes: 200
+
+train:
+  model: resnet # resnet, senet
+  img_size: 224
+  lr: 0.001
+  epochs: 50
+  bs: 32
+  device: cuda:1
+
+exp:
+  dir: ../runs/
+  name: caltech256-resnet # dataset-model
