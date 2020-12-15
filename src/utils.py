@@ -3,7 +3,8 @@ import os
 import yaml
 
 from models.resnet.model import resnet50
-from models.senet.model import se_resnet50
+from models.senet.model import senet50
+from models.cbam.model import cbam
 
 
 def read_config(config_file="../config/config.yaml"):
@@ -22,8 +23,8 @@ class Config(object):
         self.config = read_config()
         # data
         data_info = self.config['data']
-        dataset_name = data_info['dataset']
-        dataset_info = data_info[dataset_name]
+        self.dataset_name = data_info['dataset']
+        dataset_info = data_info[self.dataset_name]
         self.root_folder = dataset_info['root_folder']
         self.txt_path = dataset_info['txt_path']
         self.split = list(map(int, data_info['split'].split(':')))
@@ -49,7 +50,43 @@ def get_model(name):
     cfg = Config()
     model_dict = {
         'resnet': resnet50,
-        'senet': se_resnet50
+        'senet': senet50,
+        'cbam': cbam
     }
     model = model_dict[name](n_classes=cfg.n_classes)
     return model
+
+
+def reformat_tiny_ds():
+    import glob
+    import os
+    from shutil import move
+    from os import rmdir
+
+    target_folder = '/home/zhouchen/Datasets/tiny-imagenet-200/val/'
+
+    val_dict = {}
+    with open(target_folder + 'val_annotations.txt', 'r') as f:
+        for line in f.readlines():
+            split_line = line.split('\t')
+            val_dict[split_line[0]] = split_line[1]
+
+    paths = glob.glob(target_folder + 'images/*')
+    for path in paths:
+        file = path.split('/')[-1]
+        folder = val_dict[file]
+        if not os.path.exists(target_folder + str(folder)):
+            os.mkdir(target_folder + str(folder))
+
+    for path in paths:
+        file = path.split('/')[-1]
+        folder = val_dict[file]
+        dest = target_folder + str(folder) + '/' + str(file)
+        move(path, dest)
+
+    os.remove('/home/zhouchen/Datasets/tiny-imagenet-200/val/val_annotations.txt')
+    rmdir('/home/zhouchen/Datasets/tiny-imagenet-200/val/images')
+
+
+if __name__ == '__main__':
+    reformat_tiny_ds()

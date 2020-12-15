@@ -5,6 +5,7 @@ from torch.utils.data import DataLoader
 import torch.nn as nn
 import torch.optim as optim
 from torch.cuda.amp import autocast, GradScaler
+from torchvision.datasets import ImageFolder
 from runx.logx import logx
 
 from utils import Config, get_model
@@ -64,9 +65,13 @@ def test_epoch(epoch):
 
 # dataset
 
-tfms = get_tfms(config.img_size)
-train_ds = Caltech(txt=os.path.join(config.txt_path, 'train.txt'), transform=tfms)
-val_ds = Caltech(txt=os.path.join(config.txt_path, 'train.txt'), transform=tfms)
+train_tfms, val_tfms = get_tfms(config.img_size)
+if config.dataset_name == 'tiny-imagenet':
+    train_ds = ImageFolder(os.path.join(config.root_folder, 'train'), transform=train_tfms)
+    val_ds = ImageFolder(os.path.join(config.root_folder, 'val'), transform=val_tfms)
+else:
+    train_ds = Caltech(txt=os.path.join(config.txt_path, 'train.txt'), transform=train_tfms)
+    val_ds = Caltech(txt=os.path.join(config.txt_path, 'val.txt'), transform=val_tfms)
 train_loader = DataLoader(dataset=train_ds, batch_size=config.batch_size, shuffle=True)
 val_loader = DataLoader(dataset=val_ds, batch_size=config.batch_size, shuffle=False)
 print("data load successfully")
