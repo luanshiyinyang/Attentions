@@ -1,5 +1,5 @@
 data:
-  dataset: caltech101  # you can choose caltech101, caltech256, tiny-imagenet
+  dataset: caltech256  # you can choose caltech101, caltech256, tiny-imagenet
   split: "8:1:1"
   caltech101:
     root_folder: /home/zhouchen/Datasets/Caltech101/101_ObjectCategories
@@ -15,13 +15,13 @@ data:
     classes: 200
 
 train:
-  model: cbam # resnet, senet, cbam
+  model: eca-net # resnet, senet, cbam, eca-net, sknet, triplet-attention, resnest
   img_size: 224
   lr: 0.001
   epochs: 50
-  bs: 32
+  bs: 64
   device: cuda:0
 
 exp:
   dir: ../runs/
-  name: caltech101-cbam # dataset-model
+  name: caltech256-eca-net # dataset-model

@@ -5,6 +5,10 @@ import yaml
 from models.resnet.model import resnet50
 from models.senet.model import senet50
 from models.cbam.model import cbam
+from models.eca_net.model import eca_resnet50
+from models.sknet.model import sknet50
+from models.triplet_attention.model import triplet_attention
+from models.resnest.model import resnest50
 
 
 def read_config(config_file="../config/config.yaml"):
@@ -51,7 +55,11 @@ def get_model(name):
     model_dict = {
         'resnet': resnet50,
         'senet': senet50,
-        'cbam': cbam
+        'cbam': cbam,
+        'eca-net': eca_resnet50,
+        'sknet': sknet50,
+        'triplet-attention': triplet_attention,
+        'resnest': resnest50
     }
     model = model_dict[name](n_classes=cfg.n_classes)
     return model

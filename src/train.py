@@ -4,7 +4,7 @@ import torch
 from torch.utils.data import DataLoader
 import torch.nn as nn
 import torch.optim as optim
-from torch.cuda.amp import autocast, GradScaler
+# from torch.cuda.amp import autocast, GradScaler
 from torchvision.datasets import ImageFolder
 from runx.logx import logx
 
@@ -21,15 +21,13 @@ def train_epoch(epoch):
     losses = 0.0
     total, correct = 0.0, 0.0
     for step, (x, y) in enumerate(train_loader):
-        with autocast():
-            x, y = x.to(config.device), y.to(config.device)
-            out = model(x)
-            loss = criterion(out, y)
+        x, y = x.to(config.device), y.to(config.device)
+        out = model(x)
+        loss = criterion(out, y)
         losses += loss.cpu().detach().numpy()
         optimizer.zero_grad()
-        scaler.scale(loss).backward()
-        scaler.step(optimizer)
-        scaler.update()
+        loss.backward()
+        optimizer.step()
 
         _, pred = torch.max(out.data, 1)
         total += y.size(0)
@@ -72,13 +70,12 @@ if config.dataset_name == 'tiny-imagenet':
 else:
     train_ds = Caltech(txt=os.path.join(config.txt_path, 'train.txt'), transform=train_tfms)
     val_ds = Caltech(txt=os.path.join(config.txt_path, 'val.txt'), transform=val_tfms)
-train_loader = DataLoader(dataset=train_ds, batch_size=config.batch_size, shuffle=True)
-val_loader = DataLoader(dataset=val_ds, batch_size=config.batch_size, shuffle=False)
+train_loader = DataLoader(dataset=train_ds, batch_size=config.batch_size, shuffle=True, pin_memory=True)
+val_loader = DataLoader(dataset=val_ds, batch_size=config.batch_size, shuffle=False, pin_memory=True)
 print("data load successfully")
 # model
 model = get_model(config.model)
 model = model.to(config.device)
-scaler = GradScaler()
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=config.lr)
