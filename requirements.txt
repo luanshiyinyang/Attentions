@@ -6,3 +6,7 @@ torchsummary~=1.5.1
 runx~=0.0.10
 timm~=0.3.1
 pandas~=1.1.4
+thop~=0.0.4.post2012212138
+tensorboard~=2.3.0
+matplotlib~=3.3.2
+numpy~=1.19.3

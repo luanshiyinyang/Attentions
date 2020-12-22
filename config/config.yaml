@@ -15,7 +15,7 @@ data:
     classes: 200
 
 train:
-  model: eca-net # resnet, senet, cbam, eca-net, sknet, triplet-attention, resnest
+  model: resnest # resnet, senet, cbam, eca-net, sknet, triplet-attention, resnest
   img_size: 224
   lr: 0.001
   epochs: 50
@@ -24,4 +24,4 @@ train:
 
 exp:
   dir: ../runs/
-  name: caltech256-eca-net # dataset-model
+  name: caltech256-resnest # dataset-model

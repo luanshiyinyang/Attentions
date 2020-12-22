@@ -103,12 +103,15 @@ def resnet50(n_classes=101):
 
 
 if __name__ == '__main__':
+    from thop import profile
+    from thop import clever_format
     model = resnet50()
     print(model)
     print("resnet50 have {} paramerters in total".format(sum(x.numel() for x in model.parameters())))
 
     input = torch.randn(1, 3, 224, 224)
-    out = model(input)
-    print(out.shape)
 
-    summary(model.cuda(), (3, 224, 224))
+    # summary(model.cuda(), (3, 224, 224))
+    flops, params = profile(model, inputs=(input, ))
+    flops, params = clever_format([flops, params], "%.3f")
+    print(flops, params)

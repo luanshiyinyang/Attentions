@@ -9,4 +9,6 @@ def sknet50(n_classes=1000):
 
 
 if __name__ == '__main__':
-    sknet50()
+    import torch
+    net = sknet50()
+    net(torch.zeros(32, 3, 224, 224))

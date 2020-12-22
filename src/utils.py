@@ -1,6 +1,9 @@
 import os
+from glob import glob
 
 import yaml
+from tensorboard.backend.event_processing import event_accumulator
+from torchsummary import summary
 
 from models.resnet.model import resnet50
 from models.senet.model import senet50
@@ -61,6 +64,7 @@ def get_model(name):
         'triplet-attention': triplet_attention,
         'resnest': resnest50
     }
+    print("use model:", name)
     model = model_dict[name](n_classes=cfg.n_classes)
     return model
 
@@ -96,5 +100,14 @@ def reformat_tiny_ds():
     rmdir('/home/zhouchen/Datasets/tiny-imagenet-200/val/images')
 
 
-if __name__ == '__main__':
-    reformat_tiny_ds()
+def read_tfevents(filepath="../runs/baseline/"):
+    filename = glob(filepath + '/events*')[0]
+
+    ea = event_accumulator.EventAccumulator(filename)
+    ea.Reload()
+    train_loss = [x.value for x in ea.scalars.Items('train/loss')]
+    train_accuracy = [x.value for x in ea.scalars.Items('train/acc')]
+    val_loss = [x.value for x in ea.scalars.Items('val/loss')]
+    val_accuracy = [x.value for x in ea.scalars.Items('val/acc')]
+    return train_loss, train_accuracy, val_loss, val_accuracy
+

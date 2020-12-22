@@ -70,9 +70,9 @@ if config.dataset_name == 'tiny-imagenet':
 else:
     train_ds = Caltech(txt=os.path.join(config.txt_path, 'train.txt'), transform=train_tfms)
     val_ds = Caltech(txt=os.path.join(config.txt_path, 'val.txt'), transform=val_tfms)
-train_loader = DataLoader(dataset=train_ds, batch_size=config.batch_size, shuffle=True, pin_memory=True)
+train_loader = DataLoader(dataset=train_ds, batch_size=config.batch_size, shuffle=True, pin_memory=True, drop_last=True)
 val_loader = DataLoader(dataset=val_ds, batch_size=config.batch_size, shuffle=False, pin_memory=True)
-print("data load successfully")
+print("data load successfully, use dataset:", config.dataset_name)
 # model
 model = get_model(config.model)
 model = model.to(config.device)
