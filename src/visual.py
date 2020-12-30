@@ -16,13 +16,26 @@ def plot_history(ds="caltech256"):
     plt.figure(figsize=(12, 6))
     for exp in exp_dirs:
         train_loss, train_acc, val_loss, val_acc = read_tfevents(os.path.join(base_dir, exp))
-        plt.plot(np.arange(len(train_loss[:30])), train_loss[:30], label=exp)
-        # plt.plot(np.arange(len(val_loss[:10])), val_loss[:10], label=exp)
+        if exp.endswith('resnet'):
+            plt.plot(np.arange(len(train_loss[:30])), train_loss[:30], label=exp, marker='x')
+            # plt.plot(np.arange(len(val_loss[:30])), val_loss[:30], label=exp, marker='o')
+        else:
+            plt.plot(np.arange(len(train_loss[:30])), train_loss[:30], label=exp)
+            # plt.plot(np.arange(len(val_loss[:30])), val_loss[:30], label=exp)
     plt.legend(loc='best')
     plt.xlabel("epoch")
     plt.ylabel("loss")
     plt.title('training loss')
     plt.show()
+
+
+def plot_best_acc():
+    base_dir = '../runs/'
+    exp_dirs = list(filter(lambda x: x.startswith('caltech101'), os.listdir(base_dir)))
+    plt.figure(figsize=(12, 6))
+    for exp in exp_dirs:
+        train_loss, train_acc, val_loss, val_acc = read_tfevents(os.path.join(base_dir, exp))
+        print(exp, max(val_acc))
 
 
 def get_model_config():
@@ -36,4 +49,4 @@ def get_model_config():
 
 
 if __name__ == '__main__':
-    plot_history()
+    plot_best_acc()
