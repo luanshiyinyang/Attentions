@@ -6,6 +6,14 @@
 
 在Caltech101和Caltech256上以ResNet50为基础添加各种注意力模块，对比其在基础的图像分类任务的效果。
 
+## 环境配置
+
+```
+conda create -n attn python=3.6
+conda install pytorch=1.6 cudatoolkit=10.2 torchvision
+pip install -r requirements.txt
+```
+
 ## 实验设计
 
 |     模型名称                      |     GFLOPs    |     参数量     |
